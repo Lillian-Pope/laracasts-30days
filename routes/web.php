@@ -8,24 +8,37 @@ Route::get('/', function () {
 });
 
 Route::get('/jobs', function () {
-    $jobs = Job::with('employer')->simplePaginate(3);
+    $jobs = Job::with('employer')->latest()->simplePaginate(3);
 
-    return view('jobs', [
+    return view('jobs.index', [
         'jobs' => $jobs
     ]);
 });
 
-Route::get('/jobs-test', function () {
-    $jobs = Job::all();
-//    dd($jobs);
-//    dd($jobs[0]);
-    dd($jobs[0]->title . ' ' . $jobs[0]->salary);
+Route::get('/jobs/create', function () {
+    return view('jobs.create');
 });
 
 Route::get('/jobs/{id}', function ($id) {
     $job = Job::find($id);
 
-    return view('job', ['job' => $job]);
+    return view('jobs.show', ['job' => $job]);
+});
+
+Route::post('/jobs', function () {
+        //dd(request()->all()); // will (die/dump) print out all the filled out input fields in form, including the CRSF token
+        request()->validate([
+            'title' => ['required', 'min:3'],
+            'salary' => ['required'],
+        ]);
+
+    Job::create([
+        'title' => request('title'),
+        'salary' => request('salary'),
+        'employer_id' => 1
+    ]);
+
+    return redirect('/jobs');
 });
 
 Route::get('/contact', function () {
