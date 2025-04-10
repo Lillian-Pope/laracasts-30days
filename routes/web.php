@@ -1,46 +1,24 @@
 <?php
 
-use App\Models\Job;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::view('/', 'home');
 
-Route::get('/jobs', function () {
-    $jobs = Job::with('employer')->latest()->simplePaginate(3);
+//Route::controller(JobController::class)->group(function () {
+//    Route::get('/jobs','index');
+//    Route::get('/jobs/create','create');
+//    Route::get('/jobs/{job}','show');
+//    Route::post('/jobs','store');
+//    Route::get('/jobs/{job}/edit','edit');
+//    Route::patch('/jobs/{job}','update');
+//    Route::delete('/jobs/{job}','destroy');
+//});
 
-    return view('jobs.index', [
-        'jobs' => $jobs
-    ]);
-});
+Route:: resource('jobs', JobController::class);
+    //way to show only (or limit) certain pages:
+    //['only' => ['index', 'show', .....]
+    //'except' => ['index', 'show']
+    //]);
 
-Route::get('/jobs/create', function () {
-    return view('jobs.create');
-});
-
-Route::get('/jobs/{id}', function ($id) {
-    $job = Job::find($id);
-
-    return view('jobs.show', ['job' => $job]);
-});
-
-Route::post('/jobs', function () {
-        //dd(request()->all()); // will (die/dump) print out all the filled out input fields in form, including the CRSF token
-        request()->validate([
-            'title' => ['required', 'min:3'],
-            'salary' => ['required'],
-        ]);
-
-    Job::create([
-        'title' => request('title'),
-        'salary' => request('salary'),
-        'employer_id' => 1
-    ]);
-
-    return redirect('/jobs');
-});
-
-Route::get('/contact', function () {
-    return view('contact');
-});
+Route::view('/contact', 'contact');
