@@ -18,7 +18,9 @@ class JobController extends Controller
 
     public function create()
     {
-        return view('jobs.create');
+        return view('jobs.create', [
+            'heading' => 'Create Job'
+        ]);
     }
 
     public function show(Job $job)
