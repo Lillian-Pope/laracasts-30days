@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class JobController extends Controller
 {
@@ -18,9 +21,9 @@ class JobController extends Controller
 
     public function create()
     {
-        return view('jobs.create', [
-            'heading' => 'Create Job'
-        ]);
+        return view('jobs.create'); //, [
+//            'heading' => 'Create Job'
+//        ]);
     }
 
     public function show(Job $job)
@@ -32,7 +35,7 @@ class JobController extends Controller
     {
         request()->validate([
             'title' => ['required', 'min:3'],
-            'salary' => ['required'],
+            'salary' => ['required']
         ]);
 
         Job::create([
@@ -51,7 +54,9 @@ class JobController extends Controller
 
     public function update(Job $job)
     {
-        request()->validate([ // validate
+        Gate::authorize('edit', $job);
+
+        request()->validate([
             'title' => ['required', 'min:3'],
             'salary' => ['required'],
         ]);
@@ -69,7 +74,10 @@ class JobController extends Controller
     }
     public function destroy(Job $job)
     {
+        Gate::authorize('edit', $job);
+
         $job->delete(); // same thing as: $job = Job::findOrFail($id);     $job->delete();
+
         return redirect('/jobs');
 
     }
