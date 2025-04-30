@@ -28,8 +28,8 @@ class JobPosted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Job Posted',
-            from: 'admin@pope.com'
+            from: 'admin@pope.com',
+            subject: 'Job Posted'
         );
     }
 

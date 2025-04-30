@@ -80,7 +80,7 @@ class JobController extends Controller
     }
     public function destroy(Job $job)
     {
-        Gate::authorize('edit', $job);
+        Gate::authorize('edit-job', $job);
 
         $job->delete(); // same thing as: $job = Job::findOrFail($id);     $job->delete();
 
